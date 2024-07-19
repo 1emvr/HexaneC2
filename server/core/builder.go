@@ -194,9 +194,17 @@ func (h *HexaneConfig) RunBuild() error {
 		if err = h.GenerateObjects(Injectlib, h.Compiler.BuildDirectory+"/build", InjectlibLd, "injectlib.a", true); err != nil {
 			return err
 		}
+
+		if err = h.EmbedSectionData("injectlib.a", ".text$F", h.ConfigBytes); err != nil {
+			return err
+		}
 	}
 
 	if err = h.GenerateObjects(ImplantPath, h.Compiler.BuildDirectory+"/build", ImplantLd, "implant.o", false); err != nil {
+		return err
+	}
+
+	if err = h.EmbedSectionData("implant.o", ".text$F", h.ConfigBytes); err != nil {
 		return err
 	}
 
